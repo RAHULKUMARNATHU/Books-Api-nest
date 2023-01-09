@@ -7,7 +7,7 @@ import { UpdateBookDto } from './dto/update-book.dto';
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
-  @Post()
+  @Post('/create')
   create(@Body() createBookDto: CreateBookDto) {
     return this.booksService.create(createBookDto);
   }

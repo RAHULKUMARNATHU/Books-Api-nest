@@ -1,14 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { Book, BookDocument } from './schemas/book.schema';
 
 @Injectable()
 export class BooksService {
+
+  constructor(@InjectModel(Book.name) private bookModel : Model<BookDocument>){}
+
+
+
   create(createBookDto: CreateBookDto) {
-    return 'This action adds a new book';
+
+
+    try{
+      return this.bookModel.create(createBookDto)
+    }catch(err){
+      throw new BadRequestException(err)
+    }
+    // return 'This action adds a new book';
   }
 
   findAll() {
+
+    
+
     return `This action returns all books`;
   }
 
