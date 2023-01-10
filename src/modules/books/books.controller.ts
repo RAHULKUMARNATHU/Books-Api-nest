@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Res,
+  HttpStatus,
+} from '@nestjs/common';
+import { Response } from 'express';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
@@ -8,27 +18,50 @@ export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Post('/create')
-  create(@Body() createBookDto: CreateBookDto) {
-    return this.booksService.create(createBookDto);
+  async create(@Body() createBookDto: CreateBookDto, @Res() res: Response) {
+    const data = await this.booksService.create(createBookDto);
+
+    res.status(HttpStatus.OK).send({
+      success: HttpStatus.OK,
+      message: 'Success:> Book Details Created ',
+      data,
+    });
   }
 
-  @Get()
-  findAll() {
-    return this.booksService.findAll();
+  @Get('/getAll')
+  async findAll(@Res() res: Response) {
+    const data = await this.booksService.findAll();
+
+    res.status(HttpStatus.OK).send({
+      success: HttpStatus.OK,
+      data,
+    });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.booksService.findOne(+id);
+  async findOne(@Param('id') id: string, @Res() res: Response) {
+    const data = await this.booksService.findOne(id);
+    
+    
+
+    res.status(HttpStatus.OK).send({
+      success: HttpStatus.OK,
+      data,
+    });
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
-    return this.booksService.update(+id, updateBookDto);
-  }
+  async update(
+    @Param('id') id: string,
+    @Body() updateBookDto: UpdateBookDto,
+    @Res() res: Response,
+  ) {
+    const data = await this.booksService.update(+id, updateBookDto);
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.booksService.remove(+id);
+    res.status(HttpStatus.CREATED).send({
+      success: HttpStatus.OK,
+      message: 'Success :> Updated ',
+      data,
+    });
   }
 }
